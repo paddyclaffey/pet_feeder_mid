@@ -1,0 +1,60 @@
+CREATE TYPE pet_type AS ENUM ('CAT', 'DOG', 'FISH', 'RABBIT', 'HAMSTER');
+
+
+CREATE TABLE ROLES (
+    ID serial PRIMARY KEY,
+    NAME varchar(35) NOT NULL
+);
+
+CREATE TABLE PETS (
+    ID serial PRIMARY KEY,
+    NAME varchar(35) NOT NULL,
+    TYPE pet_type NOT NULL,
+    DOB date NOT NULL
+);
+
+CREATE TYPE schedule_type AS ENUM ('FEED', 'VET');
+
+CREATE TABLE PET_SCHEDULE (
+    ID serial PRIMARY KEY,
+    TYPE schedule_type NOT NULL,
+    PET_ID int NOT NULL,
+    EVENT_FREQUENCY varchar(100) DEFAULT '0 0 1 1 *',
+    FOREIGN KEY (PET_ID) REFERENCES PETS(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE PET_HISTORY (
+    ID serial PRIMARY KEY,
+    EXECUTION_TIME timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    SCHEDULE_ID int NOT NULL,
+    FOREIGN KEY (SCHEDULE_ID) REFERENCES PET_SCHEDULE(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE USERS (
+    ID serial PRIMARY KEY,
+    username varchar(255) NOT NULL,
+    password varchar(255) NOT NULL,
+    first_name varchar(255) NOT NULL,
+    last_name varchar(255) NOT NULL,
+    email varchar(255) NOT NULL,
+    address varchar(500) NOT NULL,
+    CONSTRAINT EMAIL_UNIQUE UNIQUE (EMAIL)
+);
+
+CREATE TABLE CARETAKERS (
+    ID serial PRIMARY KEY,
+    USER_ID int NOT NULL,
+    PET_ID int NOT NULL,
+    ADMIN boolean NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (USER_ID) REFERENCES USERS(ID) ON DELETE CASCADE,
+    FOREIGN KEY (PET_ID) REFERENCES PETS(ID) ON DELETE CASCADE
+);
+
+
+CREATE TABLE USER_ROLES (
+    user_id integer NOT NULL,
+    role_id integer NOT NULL,
+    CONSTRAINT user_role_pk PRIMARY KEY (user_id, role_id),
+    CONSTRAINT user_role_user_id_fk FOREIGN KEY (user_id) REFERENCES USERS(ID) ON DELETE CASCADE,
+    CONSTRAINT user_role_role_id_fk FOREIGN KEY (role_id) REFERENCES ROLES(ID) ON DELETE CASCADE
+);
