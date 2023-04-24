@@ -3,7 +3,7 @@ package com.claffey.petminder.service.impl;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.claffey.petminder.model.entity.RoleEntity;
-import com.claffey.petminder.model.entity.UserEntity;
+import com.claffey.petminder.model.entity.User;
 import com.claffey.petminder.repository.RoleJpaRepository;
 import com.claffey.petminder.repository.UserJpaRepository;
 import com.claffey.petminder.service.UserService;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,15 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Created by Vincenzo Racca
- */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -45,7 +38,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userJpaRepository.findByUsername(username);
+        User user = userJpaRepository.findByUsername(username);
         if(user == null) {
             String message = String.format(USER_NOT_FOUND_MESSAGE, username);
             log.error(message);
@@ -56,12 +49,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.getRoles().forEach(role -> {
                 authorities.add(new SimpleGrantedAuthority(role.getName()));
             });
-            return new User(user.getUsername(), user.getPassword(), authorities);
+            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
         }
     }
 
     @Override
-    public UserEntity save(UserEntity user) {
+    public User save(User user) {
         log.info("Saving user {} to the database", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userJpaRepository.save(user);
@@ -69,24 +62,41 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public UserEntity addRoleToUser(String username, String roleName) {
+    public User addRoleToUser(String username, String roleName) {
         log.info("Adding role {} to user {}", roleName, username);
-        UserEntity userEntity = userJpaRepository.findByUsername(username);
+        User user = userJpaRepository.findByUsername(username);
         RoleEntity roleEntity = roleJpaRepository.findByName(roleName);
-        userEntity.getRoles().add(roleEntity);
-        return userEntity;
+        user.getRoles().add(roleEntity);
+        return user;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public UserEntity findByUsername(String username) {
+    public User findById(Long id) {
+        log.info("Retrieving user {}", id);
+        Optional<User> userOptional = userJpaRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        } else {
+            return null;
+            // Handle the case when the user is not found
+            // e.g., throw an exception, return null, or return a default User object
+        }
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public User findByUsername(String username) {
         log.info("Retrieving user {}", username);
         return userJpaRepository.findByUsername(username);
     }
 
+
     @Transactional(readOnly = true)
     @Override
-    public List<UserEntity> findAll() {
+    public List<User> findAll() {
         log.info("Retrieving all users");
         return userJpaRepository.findAll();
     }
@@ -99,10 +109,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String refreshToken = authorizationHeader.substring("Bearer ".length());
         UsernamePasswordAuthenticationToken authenticationToken = JwtUtil.parseToken(refreshToken);
         String username = authenticationToken.getName();
-        UserEntity userEntity = findByUsername(username);
-        List<String> roles = userEntity.getRoles().stream().map(RoleEntity::getName).collect(Collectors.toList());
+        User user = findByUsername(username);
+        List<String> roles = user.getRoles().stream().map(RoleEntity::getName).collect(Collectors.toList());
         String accessToken = JwtUtil.createAccessToken(username, issuer, roles);
         return Map.of("access_token", accessToken, "refresh_token", refreshToken);
     }
 
+    @Transactional
+    @Override
+    public User addUser(User user) {
+        return userJpaRepository.save(user);
+    }
 }

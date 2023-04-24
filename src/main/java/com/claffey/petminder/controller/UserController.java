@@ -2,7 +2,9 @@ package com.claffey.petminder.controller;
 
 
 import com.claffey.petminder.model.dto.RoleDTO;
-import com.claffey.petminder.model.entity.UserEntity;
+import com.claffey.petminder.model.entity.Pet;
+import com.claffey.petminder.model.entity.User;
+import com.claffey.petminder.service.PetService;
 import com.claffey.petminder.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -25,28 +27,33 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @Slf4j
-public class User {
+public class UserController {
 
 
     private final UserService userService;
+    private final PetService petService;
 
     @GetMapping
-    public ResponseEntity<List<UserEntity>> findAll() {
+    public ResponseEntity<List<User>> findAll() {
         return ResponseEntity.ok().body(userService.findAll());
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<UserEntity> findByUsername(@PathVariable String username) {
-        return ResponseEntity.ok().body(userService.findByUsername(username));
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> findByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok().body(userService.findById(userId));
+    }
+
+    @GetMapping("/pet")
+    public ResponseEntity<List<Pet>> getUsersPet() {
+        return ResponseEntity.ok().body(petService.getPetsForUser());
     }
 
     @PostMapping
-    public ResponseEntity<UserEntity> save(@RequestBody UserEntity user) {
-        UserEntity userEntity = userService.save(user);
+    public ResponseEntity<User> save(@RequestBody User user) {
+        User userEntity = userService.save(user);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(userEntity.getUsername()).toUriString());
         return ResponseEntity.created(uri).build();
@@ -55,8 +62,8 @@ public class User {
 
     @PostMapping("/{username}/addRoleToUser")
     public ResponseEntity<?> addRoleToUser(@PathVariable String username, @RequestBody RoleDTO request) {
-        UserEntity userEntity = userService.addRoleToUser(username, request.getRoleName());
-        return ResponseEntity.ok(userEntity);
+        User user = userService.addRoleToUser(username, request.getRoleName());
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/refreshToken")

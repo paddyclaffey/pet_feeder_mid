@@ -1,7 +1,5 @@
 package com.claffey.petminder;
 
-import com.claffey.petminder.model.entity.RoleEntity;
-import com.claffey.petminder.model.entity.UserEntity;
 import com.claffey.petminder.service.RoleService;
 import com.claffey.petminder.service.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -10,11 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class Application {

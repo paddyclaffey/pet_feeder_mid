@@ -1,10 +1,18 @@
 package com.claffey.petminder.repository;
 
-import com.claffey.petminder.model.entity.UserEntity;
+import com.claffey.petminder.model.entity.Pet;
+import com.claffey.petminder.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 
-public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
-    UserEntity findByUsername(String username);
+public interface UserJpaRepository extends JpaRepository<User, Long> {
+
+    User findByUsername(String username);
+
+//    List<Pet> findUsersByPetId(Long petId);
+//
+//    @Query("SELECT u FROM UserEntity u JOIN u.caretakers c WHERE c.pet.id = :petId")
+//    List<UserEntity> findByPetId(@Param("petId") Long petId);
 }
