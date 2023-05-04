@@ -20,7 +20,7 @@ public class User implements Serializable {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
     private String username;
@@ -43,6 +43,8 @@ public class User implements Serializable {
     @Column(nullable = false)
     private LocalDate dob;
 
+    @Column(name = "enabled")
+    private Boolean isEnabled;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

@@ -1,5 +1,8 @@
 package com.claffey.petminder.service.impl;
 
+import com.claffey.petminder.email.EmailService;
+import com.claffey.petminder.security.ConfirmationToken;
+import com.claffey.petminder.security.RepositoryTokenRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.claffey.petminder.model.entity.RoleEntity;
@@ -10,6 +13,9 @@ import com.claffey.petminder.service.UserService;
 import com.claffey.petminder.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,11 +35,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
 
+    @Autowired
+    EmailService emailService;
+
     private static final String USER_NOT_FOUND_MESSAGE = "User with username %s not found";
 
     private final UserJpaRepository userJpaRepository;
+    private final RepositoryTokenRepository repositoryTokenRepository;
+
     private final RoleJpaRepository roleJpaRepository;
     private final PasswordEncoder passwordEncoder;
+
 
     @Transactional(readOnly = true)
     @Override
@@ -53,6 +65,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
+    public Long findUserIdByUsername(String username) {
+        User user = userJpaRepository.findByUsername(username);
+        if (user != null) {
+            return user.getId();
+        } else {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+    }
+
     @Override
     public User save(User user) {
         log.info("Saving user {} to the database", user.getUsername());
@@ -60,6 +81,46 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userJpaRepository.save(user);
     }
 
+    @Override
+    public ResponseEntity<?> register(User user) {
+        if (userJpaRepository.findByEmailIgnoreCase(user.getEmail()) != null) {
+            return ResponseEntity.badRequest().body("Error: Email is already in use!");
+        }
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userJpaRepository.save(user);
+
+        ConfirmationToken confirmationToken = new ConfirmationToken(null, UUID.randomUUID().toString(), null, user);
+
+        confirmationToken = repositoryTokenRepository.save(confirmationToken);
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+        mailMessage.setFrom("petminder@gmail.com");
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject("Complete Registration!");
+        mailMessage.setText("To confirm your account, please click here : "
+                +"http://localhost:8085/confirm-account?token="+confirmationToken.getConfirmationToken());
+        emailService.sendEmail(mailMessage);
+
+        System.out.println("Confirmation Token: " + confirmationToken.getConfirmationToken());
+
+        return ResponseEntity.ok("Verify email by the link sent on your email address");
+    }
+
+    @Override
+    public ResponseEntity<?> confirmEmail(String confirmationToken) {
+        ConfirmationToken token = repositoryTokenRepository.findByConfirmationToken(confirmationToken);
+
+        if(token != null)
+        {
+            User user = userJpaRepository.findByEmailIgnoreCase(token.getUser().getEmail());
+            user.setIsEnabled(true);
+            userJpaRepository.save(user);
+            return ResponseEntity.ok("Email verified successfully!");
+        }
+        return ResponseEntity.badRequest().body("Error: Couldn't verify email");
+    }
 
     @Override
     public User addRoleToUser(String username, String roleName) {
@@ -119,5 +180,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User addUser(User user) {
         return userJpaRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<?> remove(Long userId) {
+        userJpaRepository.delete(findById(userId));
+        return ResponseEntity.ok("removed user");
     }
 }

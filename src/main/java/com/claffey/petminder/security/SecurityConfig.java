@@ -52,7 +52,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests((authz) -> authz
                         .antMatchers(HttpMethod.POST, "/login/**").permitAll()
-                        .antMatchers(HttpMethod.POST, "/users/**").hasAuthority("ROLE_ADMIN")
+                        .antMatchers(HttpMethod.POST, "/users/**").hasAuthority("ROLE_USER")
+                        .antMatchers(HttpMethod.POST, "/admin/**").hasAuthority("ROLE_ADMIN")
                         .antMatchers("/open/**").permitAll()
                         .anyRequest().authenticated()
                 )

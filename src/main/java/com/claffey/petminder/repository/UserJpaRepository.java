@@ -11,6 +11,8 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
 
+    User findByEmailIgnoreCase(String email);
+
 //    List<Pet> findUsersByPetId(Long petId);
 //
 //    @Query("SELECT u FROM UserEntity u JOIN u.caretakers c WHERE c.pet.id = :petId")

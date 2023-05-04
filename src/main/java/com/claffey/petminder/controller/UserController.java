@@ -41,30 +41,31 @@ public class UserController {
         return ResponseEntity.ok().body(userService.findAll());
     }
 
+    @GetMapping("username/{username}")
+    public ResponseEntity<User> findByUsername(@PathVariable String username) {
+        return ResponseEntity.ok().body(userService.findByUsername(username));
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<User> findByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok().body(userService.findById(userId));
     }
+
 
     @GetMapping("/pet")
     public ResponseEntity<List<Pet>> getUsersPet() {
         return ResponseEntity.ok().body(petService.getPetsForUser());
     }
 
-    @PostMapping
-    public ResponseEntity<User> save(@RequestBody User user) {
-        User userEntity = userService.save(user);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
-                .buildAndExpand(userEntity.getUsername()).toUriString());
-        return ResponseEntity.created(uri).build();
-    }
+//    @PostMapping
+//    public ResponseEntity<User> save(@RequestBody User user) {
+//        User userEntity = userService.save(user);
+//        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
+//                .buildAndExpand(userEntity.getUsername()).toUriString());
+//        return ResponseEntity.created(uri).build();
+//    }
 
 
-    @PostMapping("/{username}/addRoleToUser")
-    public ResponseEntity<?> addRoleToUser(@PathVariable String username, @RequestBody RoleDTO request) {
-        User user = userService.addRoleToUser(username, request.getRoleName());
-        return ResponseEntity.ok(user);
-    }
 
     @GetMapping("/refreshToken")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {

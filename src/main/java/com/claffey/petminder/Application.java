@@ -1,8 +1,5 @@
 package com.claffey.petminder;
 
-import com.claffey.petminder.service.RoleService;
-import com.claffey.petminder.service.UserService;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -21,17 +18,5 @@ public class Application {
 		return new BCryptPasswordEncoder();
 	}
 
-
-	@Bean
-	CommandLineRunner run(UserService userService, RoleService roleService) {
-		return args -> {
-//			roleService.save(new RoleEntity(null, "ROLE_USER"));
-//			roleService.save(new RoleEntity(null, "ROLE_ADMIN"));
-
-//			userService.addRoleToUser("rossi", "ROLE_USER");
-//			userService.addRoleToUser("bianchi", "ROLE_ADMIN");
-//			userService.addRoleToUser("bianchi", "ROLE_USER");
-		};
-	}
 
 }

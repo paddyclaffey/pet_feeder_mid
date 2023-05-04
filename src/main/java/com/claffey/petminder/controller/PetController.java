@@ -1,5 +1,6 @@
 package com.claffey.petminder.controller;
 
+import com.claffey.petminder.model.entity.Pet;
 import com.claffey.petminder.service.PetService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,13 +20,13 @@ public class PetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<com.claffey.petminder.model.entity.Pet>> getPets() {
+    public ResponseEntity<List<Pet>> getPets() {
         return ResponseEntity.ok().body(petService.getPets());
     }
 
     @PostMapping
-    public ResponseEntity<?> createPet(@RequestBody com.claffey.petminder.model.entity.Pet pet, Authentication authentication) {
-        com.claffey.petminder.model.entity.Pet createdPet = petService.createPet(pet, authentication.getName());
+    public ResponseEntity<?> createPet(@RequestBody Pet pet, Authentication authentication) {
+        Pet createdPet = petService.createPet(pet, authentication.getName());
         URI uri = URI.create("/pet/" + createdPet.getId());
         return ResponseEntity.created(uri).build();
     }

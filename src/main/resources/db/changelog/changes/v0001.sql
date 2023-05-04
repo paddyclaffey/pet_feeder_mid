@@ -10,7 +10,10 @@ CREATE TABLE PETS (
     ID serial PRIMARY KEY,
     NAME varchar(35) NOT NULL,
     TYPE pet_type NOT NULL,
-    DOB date NOT NULL
+    DOB date NOT NULL,
+    BREED varchar(50) NOT NULL,
+    COLOUR varchar(20) NOT NULL,
+    SIZE varchar(10) NOT NULL
 );
 
 CREATE TYPE schedule_type AS ENUM ('FEED', 'VET');
@@ -38,6 +41,8 @@ CREATE TABLE USERS (
     last_name varchar(255) NOT NULL,
     email varchar(255) NOT NULL,
     address varchar(500) NOT NULL,
+    DOB date NOT NULL,
+    enabled boolean,
     CONSTRAINT EMAIL_UNIQUE UNIQUE (EMAIL)
 );
 
