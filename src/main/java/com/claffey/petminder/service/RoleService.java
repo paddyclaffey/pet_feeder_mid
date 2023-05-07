@@ -6,4 +6,6 @@ public interface RoleService {
 
     RoleEntity save(RoleEntity roleEntity);
 
+    RoleEntity findByName(String roleName);
+
 }

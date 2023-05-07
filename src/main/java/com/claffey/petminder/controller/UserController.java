@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -27,7 +28,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
@@ -35,11 +36,6 @@ public class UserController {
 
     private final UserService userService;
     private final PetService petService;
-
-    @GetMapping
-    public ResponseEntity<List<User>> findAll() {
-        return ResponseEntity.ok().body(userService.findAll());
-    }
 
     @GetMapping("username/{username}")
     public ResponseEntity<User> findByUsername(@PathVariable String username) {
@@ -53,8 +49,8 @@ public class UserController {
 
 
     @GetMapping("/pet")
-    public ResponseEntity<List<Pet>> getUsersPet() {
-        return ResponseEntity.ok().body(petService.getPetsForUser());
+    public ResponseEntity<List<Pet>> getPet() {
+        return ResponseEntity.ok().body(petService.getPets());
     }
 
 //    @PostMapping

@@ -3,17 +3,18 @@ package com.claffey.petminder.service.impl;
 import com.claffey.petminder.email.EmailService;
 import com.claffey.petminder.security.ConfirmationToken;
 import com.claffey.petminder.security.RepositoryTokenRepository;
+import com.claffey.petminder.service.RoleService;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.claffey.petminder.model.entity.RoleEntity;
 import com.claffey.petminder.model.entity.User;
-import com.claffey.petminder.repository.RoleJpaRepository;
 import com.claffey.petminder.repository.UserJpaRepository;
 import com.claffey.petminder.service.UserService;
 import com.claffey.petminder.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Role;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,12 +39,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    private RoleService roleService;
+
     private static final String USER_NOT_FOUND_MESSAGE = "User with username %s not found";
 
     private final UserJpaRepository userJpaRepository;
     private final RepositoryTokenRepository repositoryTokenRepository;
-
-    private final RoleJpaRepository roleJpaRepository;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -117,6 +119,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             User user = userJpaRepository.findByEmailIgnoreCase(token.getUser().getEmail());
             user.setIsEnabled(true);
             userJpaRepository.save(user);
+            addRoleToUser(user.getUsername(), "USER");
             return ResponseEntity.ok("Email verified successfully!");
         }
         return ResponseEntity.badRequest().body("Error: Couldn't verify email");
@@ -126,7 +129,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User addRoleToUser(String username, String roleName) {
         log.info("Adding role {} to user {}", roleName, username);
         User user = userJpaRepository.findByUsername(username);
-        RoleEntity roleEntity = roleJpaRepository.findByName(roleName);
+        RoleEntity roleEntity = roleService.findByName(roleName);
         user.getRoles().add(roleEntity);
         return user;
     }

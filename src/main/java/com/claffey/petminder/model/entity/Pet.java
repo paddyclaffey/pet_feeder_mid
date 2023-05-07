@@ -1,5 +1,7 @@
 package com.claffey.petminder.model.entity;
 
+import com.claffey.petminder.model.PetType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,23 +15,33 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Pet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
 
     @Column(nullable = false)
     private String name;
 
 //    @Enumerated(EnumType.STRING)
+//    @Column(nullable = false, columnDefinition = "pet_type")
     @Column(nullable = false)
     private String type;
+    @Column(nullable = false)
+    private String breed;
+
+    @Column(nullable = false)
+    private String colour;
 
     @Column(nullable = false)
     private LocalDate dob;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @Column(nullable = false)
+    private String size;
+
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "caretakers",
             inverseJoinColumns = @JoinColumn(name = "pet_id"),

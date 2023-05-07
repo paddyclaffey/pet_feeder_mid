@@ -20,5 +20,10 @@ public class RoleServiceImpl implements RoleService {
         return roleJpaRepository.save(roleEntity);
     }
 
+    @Override
+    public RoleEntity findByName(String roleName) {
+        return roleJpaRepository.findByName(roleName);
+    }
+
 
 }

@@ -25,10 +25,16 @@ public class PetController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createPet(@RequestBody Pet pet, Authentication authentication) {
-        Pet createdPet = petService.createPet(pet, authentication.getName());
+    public ResponseEntity<?> createPet(@RequestBody Pet pet) {
+        Pet createdPet = petService.createPet(pet);
         URI uri = URI.create("/pet/" + createdPet.getId());
         return ResponseEntity.created(uri).build();
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updatePet(@RequestBody Pet pet) {
+        Pet createdPet = petService.updatePet(pet);
+        return ResponseEntity.ok().body(createdPet);
     }
 
 }

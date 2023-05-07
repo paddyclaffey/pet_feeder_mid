@@ -9,7 +9,7 @@ CREATE TABLE ROLES (
 CREATE TABLE PETS (
     ID serial PRIMARY KEY,
     NAME varchar(35) NOT NULL,
-    TYPE pet_type NOT NULL,
+    TYPE varchar(35) NOT NULL,
     DOB date NOT NULL,
     BREED varchar(50) NOT NULL,
     COLOUR varchar(20) NOT NULL,

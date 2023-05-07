@@ -7,6 +7,7 @@ import com.claffey.petminder.service.PetService;
 import com.claffey.petminder.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Role;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/admin")
+@Role(1)
 public class AdminController {
 
     private final UserService userService;
-    @GetMapping
+
+    @GetMapping("users")
     public ResponseEntity<List<User>> findAll() {
         return ResponseEntity.ok().body(userService.findAll());
     }

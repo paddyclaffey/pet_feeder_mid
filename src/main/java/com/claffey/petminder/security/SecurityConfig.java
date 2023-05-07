@@ -52,8 +52,9 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests((authz) -> authz
                         .antMatchers(HttpMethod.POST, "/login/**").permitAll()
-                        .antMatchers(HttpMethod.POST, "/users/**").hasAuthority("ROLE_USER")
-                        .antMatchers(HttpMethod.POST, "/admin/**").hasAuthority("ROLE_ADMIN")
+                                .antMatchers(HttpMethod.POST, "/users/**").hasAuthority("USER")
+                                .antMatchers(HttpMethod.POST, "/pet/**").hasAuthority("USER")
+                        .antMatchers(HttpMethod.POST, "/admin/**").hasAuthority("ADMIN")
                         .antMatchers("/open/**").permitAll()
                         .anyRequest().authenticated()
                 )

@@ -1,6 +1,7 @@
 package com.claffey.petminder.service;
 
 import com.claffey.petminder.model.entity.Pet;
+import com.claffey.petminder.model.entity.User;
 
 import java.util.List;
 
@@ -8,7 +9,13 @@ public interface PetService {
 
     List<Pet> getPets();
 
-    List<Pet> getPetsForUser();
+    Pet getPet(Long id);
 
-    Pet createPet(Pet pet, String username);
+    List<User> getAllCaretakers(Pet pet);
+
+    Pet createPet(Pet pet);
+
+    Pet updatePet(Pet pet);
+
+    void deletePet(Long id, User user);
 }
