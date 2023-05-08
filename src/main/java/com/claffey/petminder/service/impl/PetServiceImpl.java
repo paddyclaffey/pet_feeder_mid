@@ -89,17 +89,19 @@ public class PetServiceImpl implements PetService {
         return petRepository.save(existingPet);
     }
 
-    public void deletePet(Long id, User user) {
+    public long deletePet(Long id) {
         Pet existingPet = petRepository.findById(id).orElse(null);
         if (existingPet == null) {
             throw new RuntimeException("No pet found.");
         }
 
-        if (caretakerService.isUserAdminOfPet(user, existingPet)) {
+        if (caretakerService.isUserAdminOfPet(getLoggedInUser(), existingPet)) {
             petRepository.deleteById(id);
         } else {
             throw new RuntimeException("User is not the owner of this pet.");
         }
+
+        return id;
     }
 
     private User getLoggedInUser() {

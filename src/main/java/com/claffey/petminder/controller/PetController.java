@@ -37,4 +37,9 @@ public class PetController {
         return ResponseEntity.ok().body(createdPet);
     }
 
+    @DeleteMapping("/{petId}")
+    public ResponseEntity<?> deletePet(@PathVariable long petId) {
+        return ResponseEntity.ok().body(petService.deletePet(petId));
+    }
+
 }

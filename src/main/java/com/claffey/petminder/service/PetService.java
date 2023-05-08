@@ -17,5 +17,5 @@ public interface PetService {
 
     Pet updatePet(Pet pet);
 
-    void deletePet(Long id, User user);
+    long deletePet(Long id);
 }
