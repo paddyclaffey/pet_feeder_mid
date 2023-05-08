@@ -6,12 +6,12 @@ import com.claffey.petminder.model.entity.Pet;
 import com.claffey.petminder.model.entity.User;
 import com.claffey.petminder.repository.CaretakerJpaRepository;
 import com.claffey.petminder.service.CaretakerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -71,7 +71,20 @@ public class CaretakerServiceImpl implements CaretakerService {
 
 
     @Override
+    @Transactional
     public List<Caretaker> getAllPets(User user) {
         return caretakerRepository.findByUser(user);
+    }
+
+    public List<Caretaker> getAllCaretakers(User user) {
+        return caretakerRepository.findByUser(user);
+    }
+
+
+    public List<Long> getAllPetIds(User user) {
+        return caretakerRepository.findByUser(user).stream()
+                .map(Caretaker::getPet) // Map to a stream of Pet objects
+                .map(Pet::getId) // Map to a stream of pet IDs (Long)
+                .collect(Collectors.toList());
     }
 }

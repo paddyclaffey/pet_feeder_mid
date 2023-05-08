@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.POST, "/login/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/users/**").hasAuthority("USER")
                         .antMatchers(HttpMethod.POST, "/pet/**").hasAnyAuthority("USER", "ADMIN")
+                        .antMatchers(HttpMethod.POST, "/pet-schedule/**").hasAnyAuthority("USER", "ADMIN")
                         .antMatchers(HttpMethod.POST, "/admin/**").hasAuthority("ADMIN")
                         .antMatchers("/open/**").permitAll()
                         .anyRequest().authenticated()

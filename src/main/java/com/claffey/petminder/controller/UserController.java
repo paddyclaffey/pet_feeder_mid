@@ -1,8 +1,7 @@
 package com.claffey.petminder.controller;
 
 
-import com.claffey.petminder.model.dto.RoleDTO;
-import com.claffey.petminder.model.entity.Pet;
+import com.claffey.petminder.model.entity.CompletePet;
 import com.claffey.petminder.model.entity.User;
 import com.claffey.petminder.service.PetService;
 import com.claffey.petminder.service.UserService;
@@ -10,14 +9,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +45,7 @@ public class UserController {
 
 
     @GetMapping("/pet")
-    public ResponseEntity<List<Pet>> getPet() {
+    public ResponseEntity<List<CompletePet>> getPet() {
         return ResponseEntity.ok().body(petService.getPets());
     }
 

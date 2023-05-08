@@ -1,5 +1,6 @@
 package com.claffey.petminder.service;
 
+import com.claffey.petminder.model.entity.CompletePet;
 import com.claffey.petminder.model.entity.Pet;
 import com.claffey.petminder.model.entity.User;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 public interface PetService {
 
-    List<Pet> getPets();
+    List<CompletePet> getPets();
 
     Pet getPet(Long id);
 

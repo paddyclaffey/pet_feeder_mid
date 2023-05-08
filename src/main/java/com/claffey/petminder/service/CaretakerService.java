@@ -4,7 +4,6 @@ import com.claffey.petminder.model.entity.Caretaker;
 import com.claffey.petminder.model.entity.CaretakerKey;
 import com.claffey.petminder.model.entity.Pet;
 import com.claffey.petminder.model.entity.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 

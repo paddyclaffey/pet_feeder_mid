@@ -1,6 +1,5 @@
 package com.claffey.petminder.model.entity;
 
-import com.claffey.petminder.model.PetType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;

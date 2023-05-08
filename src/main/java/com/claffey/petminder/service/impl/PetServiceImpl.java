@@ -1,6 +1,7 @@
 package com.claffey.petminder.service.impl;
 
 import com.claffey.petminder.model.entity.Caretaker;
+import com.claffey.petminder.model.entity.CompletePet;
 import com.claffey.petminder.model.entity.Pet;
 import com.claffey.petminder.model.entity.User;
 import com.claffey.petminder.repository.PetJpaRepository;
@@ -22,18 +23,23 @@ public class PetServiceImpl implements PetService {
 
     private final UserServiceImpl userService;
 
-    public PetServiceImpl(PetJpaRepository petRepository, CaretakerServiceImpl caretakerService, UserServiceImpl userService) {
+    private final PetScheduleServiceImpl petScheduleService;
+
+    public PetServiceImpl(PetJpaRepository petRepository, CaretakerServiceImpl caretakerService, UserServiceImpl userService, PetScheduleServiceImpl petScheduleService) {
         this.petRepository = petRepository;
         this.caretakerService = caretakerService;
         this.userService = userService;
+        this.petScheduleService = petScheduleService;
     }
 
-    public List<Pet> getPets() {
+
+    public List<CompletePet> getPets() {
         List<Caretaker> caretakers = caretakerService.getAllPets(getLoggedInUser());
-        List<Pet> pets = new ArrayList<>();
+        List<CompletePet> pets = new ArrayList<>();
 
         caretakers.forEach(caretaker -> {
-            pets.add(caretaker.getPet());
+            Pet pet = caretaker.getPet();
+            pets.add(new CompletePet(pet, petScheduleService.get(pet)));
         });
 
         return pets;

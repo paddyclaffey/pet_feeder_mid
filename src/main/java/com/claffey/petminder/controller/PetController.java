@@ -1,9 +1,9 @@
 package com.claffey.petminder.controller;
 
+import com.claffey.petminder.model.entity.CompletePet;
 import com.claffey.petminder.model.entity.Pet;
 import com.claffey.petminder.service.PetService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -20,7 +20,7 @@ public class PetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Pet>> getPets() {
+    public ResponseEntity<List<CompletePet>> getPets() {
         return ResponseEntity.ok().body(petService.getPets());
     }
 

@@ -63,29 +63,4 @@ public class User implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "pet_id"))
     private Set<Pet> pets;
 
-//    @ManyToMany(fetch = FetchType.LAZY,
-//            cascade = {
-//                    CascadeType.PERSIST,
-//                    CascadeType.MERGE
-//            })
-//    @JoinTable(name = "users",
-//            joinColumns = { @JoinColumn(name = "user_id") },
-//            inverseJoinColumns = { @JoinColumn(name = "pet_id") })
-//    private Set<PetEntity> pets = new HashSet<>();
-
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private Set<Caretaker> caretakers = new HashSet<>();
-
-//    public void addPetEntity(PetEntity petEntity) {
-//        this.pets.add(petEntity);
-//        petEntity.getUsers().add(this);
-//    }
-//
-//    public void removePetEntity(long petEntityId) {
-//        PetEntity petEntity = this.pets.stream().filter(t -> t.getId() == petEntityId).findFirst().orElse(null);
-//        if (petEntity != null) {
-//            this.pets.remove(petEntity);
-//            petEntity.getUsers().remove(this);
-//        }
-//    }
 }

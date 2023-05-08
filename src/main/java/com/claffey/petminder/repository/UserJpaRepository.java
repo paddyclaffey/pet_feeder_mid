@@ -1,10 +1,7 @@
 package com.claffey.petminder.repository;
 
-import com.claffey.petminder.model.entity.Pet;
 import com.claffey.petminder.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 
 public interface UserJpaRepository extends JpaRepository<User, Long> {
