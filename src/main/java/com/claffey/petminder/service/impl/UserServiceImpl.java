@@ -1,6 +1,7 @@
 package com.claffey.petminder.service.impl;
 
 import com.claffey.petminder.email.EmailService;
+import com.claffey.petminder.model.entity.Pet;
 import com.claffey.petminder.security.ConfirmationToken;
 import com.claffey.petminder.security.RepositoryTokenRepository;
 import com.claffey.petminder.service.RoleService;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -190,5 +192,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public ResponseEntity<?> remove(Long userId) {
         userJpaRepository.delete(findById(userId));
         return ResponseEntity.ok("removed user");
+    }
+
+
+
+    public User getLoggedInUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return findByUsername(username);
     }
 }

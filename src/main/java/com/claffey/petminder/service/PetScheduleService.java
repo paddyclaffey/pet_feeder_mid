@@ -9,12 +9,15 @@ public interface PetScheduleService {
 
     List<PetSchedule> get(Pet pet);
 
+    PetSchedule getSchedule(Long petId);
+
+
     PetSchedule save(PetSchedule petSchedule);
 
     PetSchedule update(PetSchedule petSchedule);
 
     PetSchedule disable(PetSchedule petSchedule);
 
-    PetSchedule remove(PetSchedule petSchedule);
+    Long delete(Long petScheduleId);
 
 }

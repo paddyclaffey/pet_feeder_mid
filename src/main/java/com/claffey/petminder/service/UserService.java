@@ -26,9 +26,7 @@ public interface UserService {
     ResponseEntity<?> remove(Long userId);
 
     public User addUser(User user);
-//    public List<UserEntity> getAllUsers();
-//    public UserEntity updateUser(Integer userId, UserEntity user);
-//    public String deleteUser(Integer userId);
 
+    User getLoggedInUser();
 
 }

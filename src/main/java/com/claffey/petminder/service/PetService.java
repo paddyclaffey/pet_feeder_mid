@@ -10,7 +10,7 @@ public interface PetService {
 
     List<CompletePet> getPets();
 
-    Pet getPet(Long id);
+    CompletePet getCompletePet(Long id);
 
     List<User> getAllCaretakers(Pet pet);
 

@@ -87,4 +87,8 @@ public class CaretakerServiceImpl implements CaretakerService {
                 .map(Pet::getId) // Map to a stream of pet IDs (Long)
                 .collect(Collectors.toList());
     }
+
+    public boolean isUserCaretaker(User user, Pet pet) {
+        return isUserCaretakerOfPet(user, pet) || isUserAdminOfPet(user, pet);
+    }
 }

@@ -31,6 +31,7 @@ public class PetSchedule {
     private String description;
 
     @Column(name = "start_time", nullable = false)
+//    I'm going to use this as last time, and then update the history (TBC)
     private LocalTime startTime;
 
     @Column(name = "frequency_interval", nullable = false)

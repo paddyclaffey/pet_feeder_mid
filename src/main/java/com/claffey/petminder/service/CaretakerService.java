@@ -20,4 +20,6 @@ public interface CaretakerService {
     List<Caretaker> getAllCaretakers(Pet pet);
 
     List<Caretaker> getAllPets(User user);
+
+    boolean isUserCaretaker(User user, Pet pet);
 }

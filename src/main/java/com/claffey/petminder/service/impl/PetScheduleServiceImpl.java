@@ -3,6 +3,7 @@ package com.claffey.petminder.service.impl;
 import com.claffey.petminder.model.entity.Pet;
 import com.claffey.petminder.model.entity.PetSchedule;
 import com.claffey.petminder.model.entity.User;
+import com.claffey.petminder.repository.PetJpaRepository;
 import com.claffey.petminder.repository.PetScheduleRepository;
 import com.claffey.petminder.service.PetScheduleService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,20 +18,29 @@ public class PetScheduleServiceImpl implements PetScheduleService {
 
     private final PetScheduleRepository petScheduleRepository;
 
+    private final PetJpaRepository petJpaRepository;
+
     private final CaretakerServiceImpl caretakerService;
 
     private final UserServiceImpl userService;
 
 
-    public PetScheduleServiceImpl(PetScheduleRepository petScheduleRepository, CaretakerServiceImpl caretakerService,  UserServiceImpl userService) {
+    public PetScheduleServiceImpl(PetScheduleRepository petScheduleRepository, PetJpaRepository petJpaRepository, CaretakerServiceImpl caretakerService, UserServiceImpl userService) {
         this.petScheduleRepository = petScheduleRepository;
+        this.petJpaRepository = petJpaRepository;
         this.caretakerService = caretakerService;
         this.userService = userService;
     }
 
     @Override
     public PetSchedule save(PetSchedule petSchedule) {
-        if (!caretakerService.isUserAdminOfPet(getLoggedInUser(), petSchedule.getPet())) {
+        Pet pet = petJpaRepository.findById(petSchedule.getPetId()).orElse(null);
+
+        if (pet == null) {
+            throw new RuntimeException("No Pet found.");
+        }
+
+        if (!caretakerService.isUserAdminOfPet(userService.getLoggedInUser(), pet)) {
             throw new RuntimeException("User is not the owner of this pet.");
         }
 
@@ -41,6 +51,12 @@ public class PetScheduleServiceImpl implements PetScheduleService {
     public List<PetSchedule> get(Pet pet) {
         // Set the fetched schedules to the pet object
         return petScheduleRepository.findByPet(pet);
+    }
+
+    @Override
+    public PetSchedule getSchedule(Long petId) {
+        // Set the fetched schedules to the pet object
+        return petScheduleRepository.findById(petId).orElse(null);
     }
 
 
@@ -55,17 +71,20 @@ public class PetScheduleServiceImpl implements PetScheduleService {
     }
 
     @Override
-    public PetSchedule remove(PetSchedule petSchedule) {
-        return null;
-    }
+    public Long delete(Long petScheduleId) {
 
-    private User getLoggedInUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userService.findByUsername(username);
-    }
+        PetSchedule petSchedule = getSchedule(petScheduleId);
+        if (petSchedule == null) {
+            throw new RuntimeException("No pet schedule found.");
+        }
 
-    private boolean isUserCaretaker(User user, Pet pet) {
-        return caretakerService.isUserCaretakerOfPet(user, pet) || caretakerService.isUserAdminOfPet(user, pet);
+        if (caretakerService.isUserAdminOfPet(userService.getLoggedInUser(), petSchedule.getPet())) {
+            petScheduleRepository.deleteById(petScheduleId);
+        } else {
+            throw new RuntimeException("User is not the owner of this pet.");
+        }
+
+        return petScheduleId;
     }
 
 }

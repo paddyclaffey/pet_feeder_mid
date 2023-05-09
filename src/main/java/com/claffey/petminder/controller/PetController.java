@@ -19,6 +19,11 @@ public class PetController {
         this.petService = petService;
     }
 
+    @GetMapping("{petId}")
+    public ResponseEntity<CompletePet> getPet(@PathVariable Long petId) {
+        return ResponseEntity.ok().body(petService.getCompletePet(petId));
+    }
+
     @GetMapping
     public ResponseEntity<List<CompletePet>> getPets() {
         return ResponseEntity.ok().body(petService.getPets());

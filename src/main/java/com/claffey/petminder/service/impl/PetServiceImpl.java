@@ -34,7 +34,7 @@ public class PetServiceImpl implements PetService {
 
 
     public List<CompletePet> getPets() {
-        List<Caretaker> caretakers = caretakerService.getAllPets(getLoggedInUser());
+        List<Caretaker> caretakers = caretakerService.getAllPets(userService.getLoggedInUser());
         List<CompletePet> pets = new ArrayList<>();
 
         caretakers.forEach(caretaker -> {
@@ -49,8 +49,7 @@ public class PetServiceImpl implements PetService {
     public List<User> getAllCaretakers(Pet pet) {
         List<User> users = new ArrayList<>();
 
-        if (isUserCaretaker(getLoggedInUser(), pet)) {
-
+        if (caretakerService.isUserCaretaker(userService.getLoggedInUser(), pet)) {
             List<Caretaker> caretakers = caretakerService.getAllCaretakers(pet);
             caretakers.forEach(caretaker -> {
                 users.add(caretaker.getUser());
@@ -62,27 +61,51 @@ public class PetServiceImpl implements PetService {
         return users;
     }
 
-    public Pet getPet(Long id) {
+    private Pet getPet(Long id) {
         Pet pet = petRepository.findById(id).orElse(null);
-
         if (pet == null) {
             throw new RuntimeException("No pet found.");
-
         }
+
+        if (!caretakerService.isUserCaretakerOfPet(userService.getLoggedInUser(), pet)) {
+            throw new RuntimeException("User does not have permission to view this pet.");
+        }
+
+
 
         return pet;
     }
 
+    public CompletePet getCompletePet(Long id) {
+        CompletePet completePet = null;
+
+        Pet pet = petRepository.findById(id).orElse(null);
+        if (pet == null) {
+            throw new RuntimeException("No pet found.");
+        }
+
+        if (caretakerService.isUserCaretaker(userService.getLoggedInUser(), pet)) {
+            completePet = new CompletePet(pet, petScheduleService.get(pet));
+
+        } else {
+            throw new RuntimeException("User does not have permission to view this pet.");
+        }
+
+
+
+        return completePet;
+    }
+
     public Pet createPet(Pet pet) {
         Pet savedPet = petRepository.save(pet);
-        caretakerService.addAdminRelationship(getLoggedInUser(), pet);
+        caretakerService.addAdminRelationship(userService.getLoggedInUser(), pet);
         return savedPet;
     }
 
     public Pet updatePet(Pet pet) {
         Pet existingPet = getPet(pet.getId());
 
-        if (!caretakerService.isUserAdminOfPet(getLoggedInUser(), pet)) {
+        if (!caretakerService.isUserAdminOfPet(userService.getLoggedInUser(), pet)) {
             throw new RuntimeException("User is not the owner of this pet.");
         }
 
@@ -101,22 +124,13 @@ public class PetServiceImpl implements PetService {
             throw new RuntimeException("No pet found.");
         }
 
-        if (caretakerService.isUserAdminOfPet(getLoggedInUser(), existingPet)) {
+        if (caretakerService.isUserAdminOfPet(userService.getLoggedInUser(), existingPet)) {
             petRepository.deleteById(id);
         } else {
             throw new RuntimeException("User is not the owner of this pet.");
         }
 
         return id;
-    }
-
-    private User getLoggedInUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userService.findByUsername(username);
-    }
-
-    private boolean isUserCaretaker(User user, Pet pet) {
-        return caretakerService.isUserCaretakerOfPet(user, pet) || caretakerService.isUserAdminOfPet(user, pet);
     }
 
 }

@@ -29,6 +29,11 @@ public class PetScheduleController {
         return ResponseEntity.created(uri).build();
     }
 
+    @DeleteMapping("/{petScheduleId}")
+    public ResponseEntity<?> deletePetSchedule(@PathVariable long petScheduleId) {
+        return ResponseEntity.ok().body(petScheduleService.delete(petScheduleId));
+    }
+
 //    @PutMapping
 //    public ResponseEntity<?> updatePet(@RequestBody Pet pet) {
 //        Pet createdPet = petService.updatePet(pet);
