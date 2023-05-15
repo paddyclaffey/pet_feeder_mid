@@ -34,6 +34,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
@@ -52,11 +53,11 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests((authz) -> authz
                         .antMatchers(HttpMethod.POST, "/login/**").permitAll()
-                        .antMatchers(HttpMethod.POST, "/users/**").hasAuthority("USER")
                         .antMatchers(HttpMethod.POST, "/pet/**").hasAnyAuthority("USER", "ADMIN")
                         .antMatchers(HttpMethod.POST, "/pet-schedule/**").hasAnyAuthority("USER", "ADMIN")
                         .antMatchers(HttpMethod.POST, "/admin/**").hasAuthority("ADMIN")
                         .antMatchers("/open/**").permitAll()
+                        .antMatchers("/websockets/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors() // enable CORS

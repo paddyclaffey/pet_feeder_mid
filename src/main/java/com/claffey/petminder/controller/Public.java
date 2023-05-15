@@ -10,11 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 
 
 @RestController
@@ -47,5 +45,8 @@ public class Public {
         }
 
         return ResponseEntity.ok(jsonNode);
+    }
+
+    public static class WebsocketController {
     }
 }
