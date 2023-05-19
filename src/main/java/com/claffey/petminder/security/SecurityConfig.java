@@ -52,10 +52,10 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((authz) -> authz
-                        .antMatchers(HttpMethod.POST, "/login/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/pet/**").hasAnyAuthority("USER", "ADMIN")
                         .antMatchers(HttpMethod.POST, "/pet-schedule/**").hasAnyAuthority("USER", "ADMIN")
                         .antMatchers(HttpMethod.POST, "/admin/**").hasAuthority("ADMIN")
+                        .antMatchers(HttpMethod.POST, "/login/**").permitAll()
                         .antMatchers("/open/**").permitAll()
                         .antMatchers("/websockets/**").permitAll()
                         .anyRequest().authenticated()

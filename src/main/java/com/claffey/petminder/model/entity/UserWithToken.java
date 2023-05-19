@@ -1,9 +1,15 @@
 package com.claffey.petminder.model.entity;
 
+import lombok.Data;
+
+@Data
 public class UserWithToken extends User {
 
     private String token;
-    public UserWithToken(User user, String token) {
+
+    private boolean isConnected;
+
+    public UserWithToken(User user, String token, boolean isConnected) {
         this.setId(user.getId());
         this.setUsername(user.getUsername());
         this.setPassword(user.getPassword());
@@ -14,6 +20,7 @@ public class UserWithToken extends User {
         this.setDob(user.getDob());
         this.setRoles(user.getRoles());
         this.token = token;
+        this.isConnected = isConnected;
     }
 
 

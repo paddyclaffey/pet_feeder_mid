@@ -10,7 +10,7 @@ import org.springframework.web.util.HtmlUtils;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:4200")
-public class WebsocketController {
+public class WebSocketController {
 
     @MessageMapping("/message")
     @SendTo("/topic/message")

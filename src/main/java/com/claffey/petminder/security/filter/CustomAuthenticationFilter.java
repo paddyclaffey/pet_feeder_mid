@@ -48,6 +48,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             Map<String, String> map = objectMapper.readValue(request.getInputStream(), Map.class);
             username = map.get("username");
             password = map.get("password");
+
             log.debug("Login with username: {}", username);
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         }

@@ -49,15 +49,6 @@ public class UserController {
         return ResponseEntity.ok().body(petService.getPets());
     }
 
-//    @PostMapping
-//    public ResponseEntity<User> save(@RequestBody User user) {
-//        User userEntity = userService.save(user);
-//        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
-//                .buildAndExpand(userEntity.getUsername()).toUriString());
-//        return ResponseEntity.created(uri).build();
-//    }
-
-
 
     @GetMapping("/refreshToken")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
